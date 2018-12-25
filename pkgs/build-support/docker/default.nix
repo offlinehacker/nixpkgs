@@ -350,6 +350,11 @@ rec {
     }
     ''
       cp -r ${contents}/ ./layer
+      chmod ug+w layer
+
+      if [[ -n $extraCommands ]]; then
+        (cd layer; eval "$extraCommands")
+      fi
 
       if [[ -n $extraCommands ]]; then
         chmod ug+w layer
