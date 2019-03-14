@@ -2226,6 +2226,8 @@ in
 
   onnxruntime = callPackage ../development/libraries/onnxruntime { };
 
+  virtboard = callPackage ../applications/misc/virtboard { };
+
   xkbd = callPackage ../applications/misc/xkbd { };
 
   libpsm2 = callPackage ../os-specific/linux/libpsm2 { };
