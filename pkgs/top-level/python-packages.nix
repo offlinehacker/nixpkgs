@@ -5701,6 +5701,8 @@ in {
 
   taskw = callPackage ../development/python-modules/taskw { };
 
+  tbselenium = callPackage ../development/python-modules/tbselenium { };
+
   telethon = callPackage ../development/python-modules/telethon { };
 
   telethon-session-sqlalchemy = callPackage ../development/python-modules/telethon-session-sqlalchemy { };
