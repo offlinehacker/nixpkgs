@@ -1,0 +1,50 @@
+[
+  {
+    "version": "1.14.3",
+    "sha256": "1r31ssf8bdbz8fdsprhkc34jqhz5rcs3ixlf0mbjcbq0xr7y651z"
+  },
+  {
+    "version": "1.14.1",
+    "sha256": "1cyln9nwry290fpffx6xxy0ll7ybib5ifja7nnq93f3f2p0sj421"
+  },
+  {
+    "version": "1.13.5",
+    "sha256": "06pf4h76zsqs3dsxr57y9sb9sw48nfyw1x2q1725zww61jfz2a6y"
+  },
+  {
+    "version": "1.12.9",
+    "sha256": "0fxrvwl60wmj30azaw5ws8ilm62fmabz1l9ixpxq3lbrmkzhvx0m"
+  },
+  {
+    "version": "1.11.10",
+    "sha256": "0gjh2sqdxm4yxcg22135368sk57dcdgcs5lfnhhv5g5ipsw0g9sc"
+  },
+  {
+    "version": "1.10.13",
+    "sha256": "07hwcamlc1kh5flwv4ahfkcg2lyhnbs8q2xczaws6v3sjxaycrrn"
+  },
+  {
+    "version": "1.9.11",
+    "sha256": "1wl944ci7k8knrkdrc328agyq4c953j9dm0sn314s42j18lfd7rv"
+  },
+  {
+    "version": "1.8.15",
+    "sha256": "1mwaafnkimr4kwqws4qli11wbavpmf27i6pjq77sfsapw9sz54j4"
+  },
+  {
+    "version": "1.7.16",
+    "sha256": "1ksalw3hzbcca89n9h3pas9nqj2n5gq3rbpdx633ycqb8g46h1iw"
+  },
+  {
+    "version": "1.6.13",
+    "sha256": "1m5qqyqavia4hdph9s2s14sv2jr3bqy7x921ggdzqwpzmay45yiz"
+  },
+  {
+    "version": "1.5.8",
+    "sha256": "07fb6zcas7h8pq8h3ilzfrqkk8g6xri3np1lwwyf5ra1h7jc5bz9"
+  },
+  {
+    "version": "1.4.12",
+    "sha256": "0sxbylcr9p3gbvxlyljdajy5widrlfgj13sw2h2h0ai747kjflip"
+  }
+]

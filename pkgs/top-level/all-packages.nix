@@ -19033,7 +19033,21 @@ in
 
   kubeval = callPackage ../applications/networking/cluster/kubeval { };
 
-  kubernetes = callPackage ../applications/networking/cluster/kubernetes { };
+  inherit (callPackage ../applications/networking/cluster/kubernetes {})
+    kubernetes_1_4_12
+    kubernetes_1_5_8
+    kubernetes_1_6_13
+    kubernetes_1_7_16
+    kubernetes_1_8_15
+    kubernetes_1_9_11
+    kubernetes_1_10_13
+    kubernetes_1_11_10
+    kubernetes_1_12_9
+    kubernetes_1_13_5
+    kubernetes_1_14_1
+    kubernetes_1_14_3
+    ;
+  kubernetes = kubernetes_1_14_3;
 
   kubectl = callPackage ../applications/networking/cluster/kubectl { };
 
