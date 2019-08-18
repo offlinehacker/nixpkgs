@@ -68,8 +68,10 @@ let
       wrapProgram $out/bin/kube-addons --set "KUBECTL_BIN" "$out/bin/kubectl"
       ''}
 
+      ${optionalString (elem "cmd/kubectl" components) ''
       $out/bin/kubectl completion bash > $out/share/bash-completion/completions/kubectl
       $out/bin/kubectl completion zsh > $out/share/zsh/site-functions/_kubectl
+      ''}
     '';
 
     preFixup = ''
