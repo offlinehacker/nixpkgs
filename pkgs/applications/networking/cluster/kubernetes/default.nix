@@ -34,6 +34,19 @@ let
     preBuild = ''
       export HOME=$PWD
     '';
+    binaries = [
+      "kubectl"
+      "kubeadm"
+      "kube-apiserver"
+      "kube-controller-manager"
+      "kube-scheduler"
+      "kubelet"
+      "kubemark"
+      "hyperkube"
+      "kube-proxy"
+      "cloud-controller-manager"
+      "e2e.test"
+    ];
 
     postPatch = ''
       substituteInPlace "hack/lib/golang.sh" --replace "_cgo" ""
@@ -55,7 +68,12 @@ let
     installPhase = ''
       mkdir -p "$out/bin" "$out/share/bash-completion/completions" "$out/share/zsh/site-functions" "$man/share/man" "$pause/bin"
 
-      cp _output/local/go/bin/* "$out/bin/"
+      for binary in $binaries; do
+        if [ -f "_output/local/go/bin/$binary" ]; then
+          cp "_output/local/go/bin/$binary" "$out/bin/"
+        fi
+      done
+
       cp build/pause/pause "$pause/bin/pause"
       cp -R docs/man/man1 "$man/share/man"
 
