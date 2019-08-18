@@ -31,9 +31,6 @@ let
 
     outputs = ["out" "man" "pause"];
 
-    preBuild = ''
-      export HOME=$PWD
-    '';
     binaries = [
       "kubectl"
       "kubeadm"
@@ -48,6 +45,10 @@ let
       "e2e.test"
     ];
 
+    WHAT = components;
+
+    preBuild = "export HOME=$PWD";
+
     postPatch = ''
       substituteInPlace "hack/lib/golang.sh" --replace "_cgo" ""
       substituteInPlace "hack/update-generated-docs.sh" --replace "make" "make SHELL=${stdenv.shell}"
@@ -57,8 +58,6 @@ let
 
       patchShebangs ./hack
     '';
-
-    WHAT="${concatStringsSep " " components}";
 
     postBuild = ''
       ./hack/update-generated-docs.sh
