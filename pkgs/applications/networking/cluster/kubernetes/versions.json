@@ -1,19 +1,19 @@
 [
   {
-    "version": "1.14.3",
-    "sha256": "1r31ssf8bdbz8fdsprhkc34jqhz5rcs3ixlf0mbjcbq0xr7y651z"
+    "version": "1.15.2",
+    "sha256": "05sixqs3wj10yzxhrh8qn7q6pabhvnkgdhwq8vvkd4h758pnr1hh"
   },
   {
-    "version": "1.14.1",
-    "sha256": "1cyln9nwry290fpffx6xxy0ll7ybib5ifja7nnq93f3f2p0sj421"
+    "version": "1.14.5",
+    "sha256": "1a0ab7fm02yci6fd72z888c01695jsj2k5vxk4pywxrd8xhszvzy"
   },
   {
-    "version": "1.13.5",
-    "sha256": "06pf4h76zsqs3dsxr57y9sb9sw48nfyw1x2q1725zww61jfz2a6y"
+    "version": "1.13.9",
+    "sha256": "0dnwxd38ixl5czv2g1qix3gfxmyh2ig0zbalgvc3lq9c57wd0yg8"
   },
   {
-    "version": "1.12.9",
-    "sha256": "0fxrvwl60wmj30azaw5ws8ilm62fmabz1l9ixpxq3lbrmkzhvx0m"
+    "version": "1.12.10",
+    "sha256": "18923qqblx0y3g6mk5lzkm2hbb3a09bxbnppabdb6svwqppazzjh"
   },
   {
     "version": "1.11.10",
