@@ -8,7 +8,7 @@ echo '[]' >versions.json
 
 kops_recommended_versions() {
     http https://raw.githubusercontent.com/kubernetes/kops/master/channels/stable \
-        | yq -r '.spec.kubernetesVersions[] | .recommendedVersion'
+        | yq -r '.spec.kubernetesVersions[:5] | .[] | .recommendedVersion'
 }
 
 for version in $(kops_recommended_versions); do
