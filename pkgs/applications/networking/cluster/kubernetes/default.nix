@@ -31,6 +31,10 @@ let
 
     outputs = ["out" "man" "pause"];
 
+    preBuild = ''
+      export HOME=$PWD
+    '';
+
     postPatch = ''
       substituteInPlace "hack/lib/golang.sh" --replace "_cgo" ""
       substituteInPlace "hack/update-generated-docs.sh" --replace "make" "make SHELL=${stdenv.shell}"
@@ -55,12 +59,14 @@ let
       cp build/pause/pause "$pause/bin/pause"
       cp -R docs/man/man1 "$man/share/man"
 
+      ${optionalString ((builtins.compareVersions version "1.15") < 0) ''
       cp cluster/addons/addon-manager/namespace.yaml $out/share
       cp cluster/addons/addon-manager/kube-addons.sh $out/bin/kube-addons
       patchShebangs $out/bin/kube-addons
       substituteInPlace $out/bin/kube-addons \
         --replace /opt/namespace.yaml $out/share/namespace.yaml
       wrapProgram $out/bin/kube-addons --set "KUBECTL_BIN" "$out/bin/kubectl"
+      ''}
 
       $out/bin/kubectl completion bash > $out/share/bash-completion/completions/kubectl
       $out/bin/kubectl completion zsh > $out/share/zsh/site-functions/_kubectl
