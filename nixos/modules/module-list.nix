@@ -231,17 +231,22 @@
   ./services/backup/tsm.nix
   ./services/backup/znapzend.nix
   ./services/cluster/hadoop/default.nix
-  ./services/cluster/kubernetes/addons/dns.nix
-  ./services/cluster/kubernetes/addons/dashboard.nix
-  ./services/cluster/kubernetes/addon-manager.nix
-  ./services/cluster/kubernetes/apiserver.nix
-  ./services/cluster/kubernetes/controller-manager.nix
   ./services/cluster/kubernetes/default.nix
-  ./services/cluster/kubernetes/flannel.nix
-  ./services/cluster/kubernetes/kubelet.nix
-  ./services/cluster/kubernetes/pki.nix
-  ./services/cluster/kubernetes/proxy.nix
-  ./services/cluster/kubernetes/scheduler.nix
+  ./services/cluster/kubernetes/base.nix
+  ./services/cluster/kubernetes/components/apiserver.nix
+  ./services/cluster/kubernetes/components/controller-manager.nix
+  ./services/cluster/kubernetes/components/scheduler.nix
+  ./services/cluster/kubernetes/components/kubelet.nix
+  ./services/cluster/kubernetes/components/proxy.nix
+  ./services/cluster/kubernetes/pki/default.nix
+  ./services/cluster/kubernetes/pki/k8s.nix
+  ./services/cluster/kubernetes/pki/local.nix
+  ./services/cluster/kubernetes/pki/certmgr.nix
+  ./services/cluster/kubernetes/pki/service-account-cert-sync.nix
+  ./services/cluster/kubernetes/runtime/docker.nix
+  ./services/cluster/kubernetes/networking/flannel.nix
+  #./services/cluster/kubernetes/addons/dns.nix
+  #./services/cluster/kubernetes/addons/dashboard.nix
   ./services/computing/boinc/client.nix
   ./services/computing/torque/server.nix
   ./services/computing/torque/mom.nix

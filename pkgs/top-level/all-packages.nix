@@ -19028,6 +19028,8 @@ in
 
   ktorrent = libsForQt5.callPackage ../applications/networking/p2p/ktorrent { };
 
+  kuard = callPackage ../applications/networking/kuard { };
+
   kubecfg = callPackage ../applications/networking/cluster/kubecfg { };
 
   kubeval = callPackage ../applications/networking/cluster/kubeval { };

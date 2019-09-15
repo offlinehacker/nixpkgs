@@ -59,7 +59,7 @@
      Refactorings primarily focus on decoupling components and enhancing
      security. Two-way TLS and RBAC has been enabled by default for all
      components, which slightly changes the way the module is configured. See:
-     <xref linkend="sec-kubernetes"/> for details.
+     <!-- <xref linkend="sec-kubernetes"/> for details. -->
     </para>
    </listitem>
    <listitem>

@@ -8,44 +8,33 @@ let
 
   isRBACEnabled = elem "RBAC" top.apiserver.authorizationMode;
 
-  addons = pkgs.runCommand "kubernetes-addons" { } ''
-    mkdir -p $out
-    # since we are mounting the addons to the addon manager, they need to be copied
-    ${concatMapStringsSep ";" (a: "cp -v ${a}/* $out/") (mapAttrsToList (name: addon:
-      pkgs.writeTextDir "${name}.json" (builtins.toJSON addon)
-    ) (cfg.addons))}
-  '';
-in
-{
+  resources = attrValues cfg.resources;
+
+  resourcesHash = builtins.hashString "sha1" (builtins.toJSON resources);
+
+  hashedList = let
+    labeledItems = map (item: recursiveUpdate item {
+      metadata.labels."nixos.org/hash" = resourcesHash;
+    }) resources;
+  in {
+    kind = "List";
+    apiVersion = "v1";
+    items = labeledItems;
+    metadata.labels."nixos.org/hash" = resourceHash;
+  };
+
+  resourcesJSON = pkgs.writeFile "k8s-resources.json" (builtins.toJSON hashedList);
+
+in {
+
   ###### interface
   options.services.kubernetes.addonManager = with lib.types; {
+    enable = mkEnableOption "Kubernetes addon manager";
 
-    bootstrapAddons = mkOption {
-      description = ''
-        Bootstrap addons are like regular addons, but they are applied with cluster-admin rigths.
-        They are applied at addon-manager startup only.
-      '';
+    resources = mkOption {
+      description = "Kubernetes resources to apply on cluster.";
       default = { };
-      type = attrsOf attrs;
-      example = literalExample ''
-        {
-          "my-service" = {
-            "apiVersion" = "v1";
-            "kind" = "Service";
-            "metadata" = {
-              "name" = "my-service";
-              "namespace" = "default";
-            };
-            "spec" = { ... };
-          };
-        }
-      '';
-    };
-
-    addons = mkOption {
-      description = "Kubernetes addons (any kind of Kubernetes resource can be an addon).";
-      default = { };
-      type = attrsOf (either attrs (listOf attrs));
+      type = types.attrsOf types.attrs;
       example = literalExample ''
         {
           "my-service" = {
@@ -62,37 +51,23 @@ in
       '';
     };
 
-    enable = mkEnableOption "Whether to enable Kubernetes addon manager.";
+    kubeconfig = mkOption {
+      description = "Kubernetes bootstraper kubeconfig";
+      type = types.submodule {
+        imports = [ ./kubeconfig.nix ];
+        config = mkDefault top.kubeconfig;
+      };
+    };
   };
 
   ###### implementation
   config = mkIf cfg.enable {
-    environment.etc."kubernetes/addons".source = "${addons}/";
-
-    systemd.services.kube-addon-manager = {
-      description = "Kubernetes addon manager";
-      wantedBy = [ "kubernetes.target" ];
-      after = [ "kube-apiserver.service" ];
-      environment.ADDON_PATH = "/etc/kubernetes/addons/";
-      path = [ pkgs.gawk ];
-      serviceConfig = {
-        Slice = "kubernetes.slice";
-        ExecStart = "${top.package}/bin/kube-addons";
-        WorkingDirectory = top.dataDir;
-        User = "kubernetes";
-        Group = "kubernetes";
-        Restart = "on-failure";
-        RestartSec = 10;
-      };
-    };
 
     services.kubernetes.addonManager.bootstrapAddons = mkIf isRBACEnabled
     (let
       name = system:kube-addon-manager;
       namespace = "kube-system";
-    in
-    {
-
+    in {
       kube-addon-manager-r = {
         apiVersion = "rbac.authorization.k8s.io/v1";
         kind = "Role";

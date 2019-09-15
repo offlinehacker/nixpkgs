@@ -1,4 +1,4 @@
-{ lib, buildGoPackage, fetchFromGitHub }:
+{ lib, buildGoPackage, fetchFromGitHub, makeWrapper, bashInteractive }:
 
 with lib;
 
@@ -17,6 +17,8 @@ buildGoPackage rec {
     repo = "flannel";
     sha256 = "0akxlrrsm2w51g0qd7dnsdy0hdajx98sdhxw4iknjr2kn7j3gph9";
   };
+
+  buildInputs = [ makeWrapper ];
 
   meta = {
     description = "Network fabric for containers, designed for Kubernetes";
