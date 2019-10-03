@@ -15113,7 +15113,7 @@ in
   };
 
   rippled = callPackage ../servers/rippled {
-    boost = boost167;
+    boost = boost17x;
   };
 
   rippled-validator-keys-tool = callPackage ../servers/rippled/validator-keys-tool.nix {
