@@ -1,17 +1,27 @@
-{ stdenv, fetchurl, pkgconfig, autoreconfHook, openssl, db48, boost, zeromq, rapidcheck
-, zlib, miniupnpc, qtbase ? null, qttools ? null, wrapQtAppsHook ? null, utillinux, protobuf, python3, qrencode, libevent
+{ stdenv, fetchFromGitHub, pkgconfig, autoreconfHook
+, openssl, db48, boost, zeromq, rapidcheck, zlib, miniupnpc, utillinux, protobuf
+, python3, qrencode, libevent
+, qtbase ? null, qttools ? null, wrapQtAppsHook ? null
 , withGui }:
 
 with stdenv.lib;
-stdenv.mkDerivation rec{
-  name = "bitcoin" + (toString (optional (!withGui) "d")) + "-" + version;
+
+stdenv.mkDerivation rec {
+  pname = if withGui then "bitcoin" else "bitcoind";
   version = "0.18.1";
 
-  src = fetchurl {
-    urls = [ "https://bitcoincore.org/bin/bitcoin-core-${version}/bitcoin-${version}.tar.gz"
-             "https://bitcoin.org/bin/bitcoin-core-${version}/bitcoin-${version}.tar.gz"
-           ];
-    sha256 = "5c7d93f15579e37aa2d1dc79e8f5ac675f59045fceddf604ae0f1550eb03bf96";
+  packaging = fetchFromGitHub {
+    owner = "bitcoin-core";
+    repo = "packaging";
+    rev = "a48094dca1113fb6096768993d1b80d1a4ab5871";
+    sha256 = "0kkbpw4kcxffdik35vvf35vdkcpjfacj1m6vxr73v4f1fzw1kx9m";
+  };
+
+  src = fetchFromGitHub {
+    owner = "bitcoin";
+    repo = "bitcoin";
+    rev = "v${version}";
+    sha256 = "1wjspifh07bzhsrd39i81padzfdkj7bi6aijykxdsjjy12338yv3";
   };
 
   nativeBuildInputs =
@@ -21,6 +31,11 @@ stdenv.mkDerivation rec{
                   miniupnpc protobuf libevent]
                   ++ optionals stdenv.isLinux [ utillinux ]
                   ++ optionals withGui [ qtbase qttools qrencode ];
+
+  postInstall = ''
+    install -Dm644 $packaging/debian/bitcoin-qt.desktop $out/share/applications/bitcoin-qt.desktop
+    install -Dm644 share/pixmaps/bitcoin128.png $out/share/pixmaps/bitcoin128.png
+  '';
 
   configureFlags = [ "--with-boost-libdir=${boost.out}/lib"
                      "--disable-bench"
