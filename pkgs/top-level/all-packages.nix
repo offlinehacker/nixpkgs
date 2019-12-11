@@ -15154,6 +15154,10 @@ in
 
   haka = callPackage ../tools/security/haka { };
 
+  hasura-graphql-engine = (callPackage ../servers/hasura { }).graphql-engine;
+
+  hasura-cli = (callPackage ../servers/hasura { }).cli;
+
   heapster = callPackage ../servers/monitoring/heapster { };
 
   hbase = callPackage ../servers/hbase {};
