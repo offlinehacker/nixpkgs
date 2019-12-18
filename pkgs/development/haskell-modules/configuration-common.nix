@@ -1327,4 +1327,23 @@ self: super: {
   haskell-lsp_0_18_0_0 = super.haskell-lsp_0_18_0_0.override { haskell-lsp-types = self.haskell-lsp-types_0_18_0_0; };
   lsp-test_0_8_2_0 = (dontCheck super.lsp-test_0_8_2_0).override { haskell-lsp = self.haskell-lsp_0_18_0_0; };
 
+  # 2019-12-19 - glirc wants regex-tdfa >=1.3 which results in errors with regex-base which errors more
+  # hoping to make a proper derivation with plugins enabled and more reliable building -- kiwi
+  glirc = doJailbreak super.glirc;
+
+  # apply patches from https://github.com/snapframework/snap-server/pull/126
+  # manually until they are accepted upstream
+  snap-server = overrideCabal super.snap-server (drv: {
+    patches = [(pkgs.fetchpatch {
+      # allow compilation with network >= 3
+      url = https://github.com/snapframework/snap-server/pull/126/commits/4338fe15d68e11e3c7fd0f9862f818864adc1d45.patch;
+      sha256 = "1nlw9lckm3flzkmhkzwc7zxhdh9ns33w8p8ds8nf574nqr5cr8bv";
+    })
+    (pkgs.fetchpatch {
+      # prefer fdSocket over unsafeFdSocket
+      url = https://github.com/snapframework/snap-server/pull/126/commits/410de2df123b1d56b3093720e9c6a1ad79fe9de6.patch;
+      sha256 = "08psvw0xny64q4bw1nwg01pkzh01ak542lw6k1ps7cdcwaxk0n94";
+    })];
+  });
+
 } // import ./configuration-tensorflow.nix {inherit pkgs haskellLib;} self super
