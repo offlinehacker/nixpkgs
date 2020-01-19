@@ -1,0 +1,130 @@
+From e3e4b9824b3f475fdea4f26531beb222d06aed4c Mon Sep 17 00:00:00 2001
+From: Jaka Hudoklin <jaka@x-truder.net>
+Date: Sun, 19 Jan 2020 23:51:30 +0000
+Subject: [PATCH] add '--session' to specify the session used
+
+---
+ doc/CMakeLists.txt    |  1 +
+ doc/xss-lock.1.rst.in |  8 +++++++-
+ doc/xss-lock.service  | 10 ++++++++++
+ src/xss-lock.c        | 20 ++++++++++++++++----
+ 4 files changed, 34 insertions(+), 5 deletions(-)
+ create mode 100644 doc/xss-lock.service
+
+diff --git a/doc/CMakeLists.txt b/doc/CMakeLists.txt
+index 4fa50f7..9b6b5c9 100644
+--- a/doc/CMakeLists.txt
++++ b/doc/CMakeLists.txt
+@@ -15,4 +15,5 @@ endif()
+ 
+ install(FILES dim-screen.sh xdg-screensaver.patch
+               transfer-sleep-lock-i3lock.sh transfer-sleep-lock-generic-delay.sh
++              xss-lock.service
+         DESTINATION share/doc/${PROJECT_NAME})
+diff --git a/doc/xss-lock.1.rst.in b/doc/xss-lock.1.rst.in
+index 3d19a83..9ebfde9 100644
+--- a/doc/xss-lock.1.rst.in
++++ b/doc/xss-lock.1.rst.in
+@@ -13,7 +13,7 @@ use external locker as X screen saver
+ Synopsis
+ ========
+ 
+-| xss-lock [-n *notify_cmd*] [--ignore-sleep] [-l] [-v|-q] [--] *locker* [*arg*] ...
++| xss-lock [-n *notify_cmd*] [-s *session ID*] [--ignore-sleep] [-l] [-v|-q] [--] *locker* [*arg*] ...
+ | xss-lock --help|--version
+ 
+ Description
+@@ -66,6 +66,11 @@ Options
+                 Example scripts that wrap existing lockers are available as
+                 *@CMAKE_INSTALL_PREFIX@/share/doc/xss-lock/transfer-sleep-lock-\*.sh*.
+ 
++-s, --session=ID
++                Use the session **ID** instead of the current session.
++
++                Example: *@CMAKE_INSTALL_PREFIX@/share/doc/xss-lock/xss-lock.service*.
++
+ --ignore-sleep  Do not lock on suspend/hibernate.
+ 
+ -q, --quiet     Output only fatal errors.
+@@ -136,5 +141,6 @@ Examples
+ See also
+ ========
+ 
++**loginctl**\(1),
+ **xset**\(1),
+ **systemd-logind.service**\(8)
+diff --git a/doc/xss-lock.service b/doc/xss-lock.service
+new file mode 100644
+index 0000000..52086c8
+--- /dev/null
++++ b/doc/xss-lock.service
+@@ -0,0 +1,10 @@
++[Unit]
++Description=Auto lock
++PartOf=graphical-session.target
++
++[Service]
++Type=simple
++ExecStart=/usr/bin/xss-lock -l -s ${GRAPHICAL_SESSION_ID} -- i3lock
++
++[Install]
++WantedBy=graphical-session.target
+diff --git a/src/xss-lock.c b/src/xss-lock.c
+index cbcd38a..07b09b2 100644
+--- a/src/xss-lock.c
++++ b/src/xss-lock.c
+@@ -62,6 +62,7 @@ static gboolean opt_quiet = FALSE;
+ static gboolean opt_verbose = FALSE;
+ static gboolean opt_ignore_sleep = FALSE;
+ static gboolean opt_print_version = FALSE;
++static gchar *opt_session = NULL;
+ 
+ static GOptionEntry opt_entries[] = {
+     {G_OPTION_REMAINING, 0, 0, G_OPTION_ARG_FILENAME_ARRAY, &locker.cmd, NULL, "LOCK_CMD [ARG...]"},
+@@ -71,6 +72,7 @@ static GOptionEntry opt_entries[] = {
+     {"quiet", 'q', 0, G_OPTION_ARG_NONE, &opt_quiet, "Output only fatal errors", NULL},
+     {"verbose", 'v', 0, G_OPTION_ARG_NONE, &opt_verbose, "Output more messages", NULL},
+     {"version", 0, 0, G_OPTION_ARG_NONE, &opt_print_version, "Print version number and exit", NULL},
++    {"session", 's', 0, G_OPTION_ARG_STRING, &opt_session, "Use ID instead of the current session", "ID"},
+     {NULL}
+ };
+ 
+@@ -283,8 +285,18 @@ logind_manager_proxy_new_cb(GObject *source_object, GAsyncResult *res,
+                          G_CALLBACK(logind_manager_on_signal_prepare_for_sleep), NULL);
+         logind_manager_take_sleep_delay_lock();
+     }
+-    g_dbus_proxy_call(logind_manager, "GetSessionByPID",
+-                      g_variant_new("(u)", getpid()), G_DBUS_CALL_FLAGS_NONE,
++
++    GVariant *data;
++    gchar *name;
++    if (!user_data) {
++        data = g_variant_new("(u)", getpid());
++        name = "GetSessionByPID";
++    } else {
++        data = g_variant_new("(s)", user_data);
++        name = "GetSession";
++    }
++
++    g_dbus_proxy_call(logind_manager, name, data, G_DBUS_CALL_FLAGS_NONE,
+                       -1, NULL, logind_manager_call_get_session_cb, NULL);
+ }
+ 
+@@ -366,7 +378,7 @@ logind_manager_call_get_session_cb(GObject *source_object, GAsyncResult *res,
+ 
+     result = g_dbus_proxy_call_finish(logind_manager, res, &error);
+     if (!result) {
+-        g_warning("Error getting current session: %s", error->message);
++        g_warning("Error getting session: %s", error->message);
+         g_error_free(error);
+         return;
+     }
+@@ -514,7 +526,7 @@ main(int argc, char *argv[])
+     g_dbus_proxy_new_for_bus(G_BUS_TYPE_SYSTEM,
+                              G_DBUS_PROXY_FLAGS_DO_NOT_LOAD_PROPERTIES, NULL,
+                              LOGIND_SERVICE, LOGIND_PATH, LOGIND_MANAGER_INTERFACE,
+-                             NULL, logind_manager_proxy_new_cb, NULL);
++                             NULL, logind_manager_proxy_new_cb, opt_session);
+ 
+     loop = g_main_loop_new(NULL, FALSE);
+     g_unix_signal_add(SIGTERM, (GSourceFunc)exit_service, loop);
