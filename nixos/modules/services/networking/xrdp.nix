@@ -72,7 +72,7 @@ in {
       };
 
       port = mkOption {
-        type = types.int;
+        type = types.either types.int types.str;
         default = 3389;
         description = ''
           Specifies on which port the xrdp daemon listens.
@@ -111,7 +111,7 @@ in {
       sessionCommand = mkOption {
         type = types.str;
         default = ''${sessionData.wrapper} "$session_command"'';
-        defaultString = "sessionWrapper $session_command";
+        defaultText = "sessionWrapper $session_command";
         example = "xfce4-session";
         description = ''
           Command to run to start session.

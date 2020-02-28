@@ -34,6 +34,14 @@ in {
       kernelParams = [
         "video=hyperv_fb:${cfg.videoMode} elevator=noop"
       ];
+
+      kernelModules = [
+        "hv_sock"
+      ];
+
+      blacklistedKernelModules = [
+        "vmw_vsock_vmci_transport"
+      ];
     };
 
     environment.systemPackages = [ config.boot.kernelPackages.hyperv-daemons.bin ];
@@ -52,6 +60,17 @@ in {
         SUBSYSTEM=="cpu", ACTION=="add", DEVPATH=="/devices/system/cpu/cpu[0-9]*", TEST=="online", ATTR{online}="1"
       '';
     });
+
+    services.xrdp = {
+      enable = mkDefault true;
+      port = "vsock://-1:3389";
+      globals = {
+        security_layer = "rdp";
+        bitmap_compression = false;
+        bulk_compression = false;
+        new_cursor = false;
+      };
+    };
 
     systemd = {
       packages = [ config.boot.kernelPackages.hyperv-daemons.lib ];
