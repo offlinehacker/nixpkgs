@@ -61,6 +61,11 @@ in {
       '';
     });
 
+    services.xserver = {
+      modules = [ pkgs.xorg.xf86videofbdev ];
+      videoDrivers = [ "hyperv_fb" ];
+    };
+
     services.xrdp = {
       enable = mkDefault true;
       port = "vsock://-1:3389";
