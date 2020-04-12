@@ -27468,6 +27468,7 @@ in
   wfuzz = with python3Packages; toPythonApplication wfuzz;
 
   bemenu = callPackage ../applications/misc/bemenu { };
+  bemenu-unstable = callPackage ../applications/misc/bemenu/unstable.nix { };
 
   dapper = callPackage ../development/tools/dapper { };
 
