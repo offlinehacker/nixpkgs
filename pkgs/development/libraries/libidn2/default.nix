@@ -7,7 +7,7 @@ stdenv.mkDerivation rec {
   version = "2.3.0";
 
   src = fetchurl {
-    url = "mirror://gnu/gnu/libidn/${pname}-${version}.tar.gz";
+    url = "https://ftp.gnu.org/gnu/libidn/${pname}-${version}.tar.gz";
     sha256 = "1ddqr80kmz4l8g3r3gf7bmf2v29fgivlc2bgxfiscjg2sarivjz1";
   };
 
