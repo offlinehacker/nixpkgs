@@ -37,6 +37,9 @@
 
   # GNU (https://www.gnu.org/prep/ftp.html).
   gnu = [
+    # This one is the master repository, and thus it's always up-to-date.
+    "http://ftp.gnu.org/pub/gnu/"
+
     # This one redirects to a (supposedly) nearby and (supposedly) up-to-date
     # mirror.
     "https://ftpmirror.gnu.org/"
@@ -47,9 +50,6 @@
     "ftp://ftp.cs.tu-berlin.de/pub/gnu/"
     "ftp://ftp.chg.ru/pub/gnu/"
     "ftp://ftp.funet.fi/pub/mirrors/ftp.gnu.org/gnu/"
-
-    # This one is the master repository, and thus it's always up-to-date.
-    "http://ftp.gnu.org/pub/gnu/"
   ];
 
   # GCC.
