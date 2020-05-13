@@ -1,4 +1,4 @@
-{ stdenv, fetchurl, pkgconfig, udev, dbus, perl, python3
+{ stdenv, fetchurl, pkgconfig, udev, dbus, polkit, perl, python3
 , IOKit ? null }:
 
 stdenv.mkDerivation rec {
@@ -19,10 +19,15 @@ stdenv.mkDerivation rec {
     "--enable-usbdropdir=/var/lib/pcsc/drivers"
     "--enable-confdir=/etc"
     "--enable-ipcdir=/run/pcscd"
-  ] ++ stdenv.lib.optional stdenv.isLinux
-         "--with-systemdsystemunitdir=\${out}/etc/systemd/system"
-    ++ stdenv.lib.optional (!stdenv.isLinux)
-         "--disable-libsystemd";
+  ] ++ stdenv.lib.optionals stdenv.isLinux [
+    "--with-systemdsystemunitdir=\${out}/etc/systemd/system"
+    "--enable-polkit"
+  ] ++ stdenv.lib.optional (!stdenv.isLinux)
+    "--disable-libsystemd";
+
+  preConfigure = ''
+    substituteInPlace "configure" --replace 'POLICY_DIR=$polkit_policy_dir' "POLICY_DIR=\"$out/share/polkit-1/actions/\""
+  '';
 
   postConfigure = ''
     sed -i -re '/^#define *PCSCLITE_HP_DROPDIR */ {
@@ -36,8 +41,9 @@ stdenv.mkDerivation rec {
   '';
 
   nativeBuildInputs = [ pkgconfig perl ];
-  buildInputs = [ python3 ] ++ stdenv.lib.optionals stdenv.isLinux [ udev dbus ]
-             ++ stdenv.lib.optionals stdenv.isDarwin [ IOKit ];
+  buildInputs = [ python3 ]
+    ++ stdenv.lib.optionals stdenv.isLinux [ udev dbus polkit ]
+    ++ stdenv.lib.optionals stdenv.isDarwin [ IOKit ];
 
   meta = with stdenv.lib; {
     description = "Middleware to access a smart card using SCard API (PC/SC)";
