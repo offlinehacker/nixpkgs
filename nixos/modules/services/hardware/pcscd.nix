@@ -50,6 +50,9 @@ in {
 
   config = mkIf config.services.pcscd.enable {
 
+    # polkit actions
+    environment.systemPackages = [ pkgs.pcsclite.out ];
+
     systemd.sockets.pcscd = {
       description = "PCSC-Lite Socket";
       wantedBy = [ "sockets.target" ];
@@ -65,5 +68,23 @@ in {
         ExecReload = "${getBin pkgs.pcsclite}/sbin/pcscd -H";
       };
     };
+
+    users.groups.pcscd.gid = config.ids.gids.pcscd;
+
+    security.polkit.extraConfig = ''
+      polkit.addRule(function(action, subject) {
+        if (action.id == "org.debian.pcsc-lite.access_card" &&
+          subject.isInGroup("pcscd")) {
+          return polkit.Result.YES;
+        }
+      });
+
+      polkit.addRule(function(action, subject) {
+        if (action.id == "org.debian.pcsc-lite.access_pcsc" &&
+          subject.isInGroup("pcscd")) {
+          return polkit.Result.YES;
+        }
+      });
+    '';
   };
 }
