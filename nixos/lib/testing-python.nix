@@ -5,9 +5,11 @@
   # Ignored
 , config ? {}
   # Modules to add to each VM
-, extraConfigurations ? [] }:
+, extraConfigurations ? []
+  # Special args to pass to config eval
+, specialArgs ? {} }:
 
-with import ./build-vms.nix { inherit system pkgs minimal extraConfigurations; };
+with import ./build-vms.nix { inherit system pkgs minimal extraConfigurations specialArgs; };
 with pkgs;
 
 rec {
