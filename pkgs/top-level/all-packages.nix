@@ -17955,6 +17955,8 @@ in
 
   gomodifytags = callPackage ../development/tools/gomodifytags { };
 
+  gomove = callPackage ../development/tools/gomove { };
+
   go-langserver = callPackage ../development/tools/go-langserver { };
 
   gopls = callPackage ../development/tools/gopls { };
