@@ -7119,6 +7119,8 @@ in {
 
   dicttoxml = callPackage ../development/python-modules/dicttoxml { };
 
+  dictdiffer = callPackage ../development/python-modules/dictdiffer { };
+
   markdown2 = callPackage ../development/python-modules/markdown2 { };
 
   evernote = callPackage ../development/python-modules/evernote { };
