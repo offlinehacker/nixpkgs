@@ -40,13 +40,13 @@ let
 in
 py.pkgs.buildPythonApplication rec {
   pname = "errbot";
-  version = "6.1.1";
+  version = "6.1.4";
 
   src = fetchFromGitHub {
     owner = "errbotio";
     repo = "errbot";
     rev = version;
-    sha256 = "1s4dl1za5imwsv6j3y7m47dy91hmqd5n221kkqm9ni4mpzgpffz0";
+    sha256 = "UfhLyk9CmhIijs/QK16PUNYwSIrjZI7fpGNQ4J1rM9A=";
   };
 
   LC_ALL = "en_US.utf8";
