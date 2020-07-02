@@ -9518,6 +9518,7 @@ in
   };
   rustracerd = callPackage ../development/tools/rust/racerd {
     inherit (darwin.apple_sdk.frameworks) Security;
+    rustPlatform = rustPackages_1_42.rustPlatform;
   };
   inherit (callPackage ../development/tools/rust/rust-analyzer { })
     rust-analyzer-unwrapped rust-analyzer;
