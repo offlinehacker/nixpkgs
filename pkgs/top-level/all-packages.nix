@@ -21052,6 +21052,10 @@ in
 
   kapitonov-plugins-pack = callPackage ../applications/audio/kapitonov-plugins-pack { };
 
+  kata-containers = recurseIntoAttrs (callPackage ../applications/virtualization/kata-containers { });
+
+  kata-containers-runtime = kata-containers.runtime-defaults;
+
   kdeApplications =
     let
       mkApplications = import ../applications/kde;
