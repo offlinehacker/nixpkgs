@@ -1,0 +1,6 @@
+{
+  kustomize
+}:
+
+rec {
+}
