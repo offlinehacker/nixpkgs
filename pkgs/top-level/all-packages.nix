@@ -909,6 +909,8 @@ in
 
   go-check = callPackage ../development/tools/check { };
 
+  go-jet = callPackage ../development/tools/go-jet { };
+
   chkcrontab = callPackage ../tools/admin/chkcrontab { };
 
   claws = callPackage ../tools/misc/claws { };
